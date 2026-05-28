@@ -1,0 +1,249 @@
+---
+title: "MCP, or not MCP?"
+author: "Neal Richardson"
+institute: "AI in Production"
+date: "5 June 2026"
+title-slide-attributes:
+    data-background-image: img/cake.jpg
+    data-background-opacity: "0.35"
+format:
+  clean-revealjs:
+    include-in-header:
+      text: |
+        <style>
+        .container {
+            height: 100%;
+            width: 100%;
+            display: table;
+            table-layout: fixed;
+            text-align: center;
+        }
+
+        .inside {
+            vertical-align: middle;
+            display: table-cell;
+        }
+
+        .really-big {
+            font-size: 256px;
+        }
+
+        .extrapad {
+            margin-top:1em  !important;
+        }
+        .v-spacier {
+            margin-bottom: 2em;
+            margin-top: 2em;
+        }
+
+        div.my-footer {
+            position: absolute;
+            bottom: 0px;
+            left: 0px;
+            height: 20px;
+            width: 100%;
+        }
+        div.my-footer span {
+            font-size: 16pt;
+            font-family: "Roboto", sans-serif;
+            position: absolute;
+            color: #777;
+            left: 16px;
+            bottom: 16px;
+        }
+
+        .qrcode {
+            display: flex;
+            justify-content: center;
+        }
+
+        .blink_me {
+            animation: blinker 1s linear infinite;
+        }
+
+        @keyframes blinker {
+            50% {
+                opacity: 0;
+            }
+        }
+        </style>
+editor:
+  render-on-save: true
+---
+
+##
+
+::: {.notes}
+(ask who has used an MCP server before. who has written an MCP server)
+
+I want to start with a story about how I came to understand what MCP was and what it was for. 
+
+For context, I should introduce myself
+:::
+
+##
+
+<!-- Image of me -->
+
+::: {.notes}
+I've done a few things etc.
+Open source, Apache Arrow for many years, was chair of project management committee last year. 
+Currently at Posit, and one of the teams I oversee is Posit Connect. (any Connect users out there?)
+:::
+
+##
+
+::: {.notes}
+Connect is ...
+It is not open source, it is enterprise software that supports you in building things with open source. 
+
+(build to point about thinking about customer support from open-source maintainer lens: I want feedback on the product, and I want you to have a good experience giving it so that you'll come back and do it again. )
+(maybe not)
+:::
+
+## 
+
+::: {.notes}
+Last year, we found ourselves getting more and more into using Claude Code. One of the great things about our current moment in the industry is that, for a well established software project--the Connect codebase is 10 years old--there is such an accumulation of projects and ideas and improvements that we all agree would be great to do, but, ugh, there is so much context to have to load into your brain in order to do it that it just feels overwhelming, so it doesn't get done. But now you can just fire off Claude on a git worktree and many times it just gets it done. 
+:::
+
+## 
+
+::: {.notes}
+So, increasingly, I kept seeing problems and thinking, how can I use Claude to make it go away?
+:::
+
+## 
+
+::: {.notes}
+Responding to support escalations became one of them. Posit uses Zendesk for support, customers can file tickets there and they get fielded by our support team. When they get a clear bug report, or something that they can't answer on their own, it escalates to the engineers.
+
+I thought, Claude is good at reading the codebase, developing an understanding of how it works, and pinpointing bugs. But when fielding a support escalation, a human engineer still has to read the full Zendesk ticket history, sometimes download and extract server diagnostics that were uploaded, and synthesize that. How can I just plug Zendesk into Claude and let it figure it out?
+:::
+
+## 
+
+::: {.notes}
+I want to just take the ticket URL and give it to Claude Code like this:
+
+But that doesn't work
+:::
+
+## 
+
+::: {.notes}
+Zendesk, of course, requires authentication
+:::
+
+<!-- 
+CC can't read env vars
+Don't want your password or api key in the context anyway, that's a security risk
+even if it could, I wouldn't want it to have full access to everything I can do, and like many APIs, Zendesk doesn't let you precisely narrow the scope of a key you can grant it.
+also the API is verbose and contains a lot of details we don't need. that just pollutes the context and wastes tokens.
+and then even if I solve that for myself, I have a distribution problem, I need to make this available to everyone on the team. And potentially outside my team too: other teams, support itself.
+ -->
+
+## MCP is designed to solve this
+
+::: {.notes}
+This is where MCP comes in. So today i'm going to talk about MCP: what it is, when you should use it, and how to do it well, as well as when you should just use something else. 
+:::
+
+## What is MCP?
+
+::: {.notes}
+first want to say what it is not
+:::
+
+## What MCP is not
+
+* AI
+
+* Vector database/RAG
+
+* Magic
+
+... but you can put any of those behind an MCP server, if you want
+
+## What is MCP?
+
+* An specification for providing tools to LLMs
+
+* Originally created by Anthropic in late 2024, and then put under a consortium under the Linux Foundation
+
+* Tools: functions that LLMs can call, the model "sees" that function exists, with a description telling it what it does, what the inputs are, and what the outputs are.
+
+* MCP defines a standard for servers that host tools, and how to register them in your client, any AI application
+
+## Remote vs. Local
+
+* Two kinds of MCP server: local and remote
+
+* Local runs on your computer, remote somewhere else you can reference by URL
+
+* For a few reasons, I'm going to focus only on remote MCP. I think this is the use case that has the most real value today. It also helps with the mental model:
+
+## MCP is an API standard
+
+* It's a standard for how to design APIs that AI applications can use
+
+* Remote MCP servers communicate over HTTP, basically JSON RPC with a set of well known endpoints and a schema for how tools are defined. 
+
+* Local MCP servers don't use HTTP but still are processes running on your machine that receive requests and return responses
+
+* Realizing that MCP was just a convention for how to set up API endpoints helped demystify it for me. As someone who has worked in software and data for many years, I know how to use an HTTP API, I know how to build and serve them too. 
+
+## 
+
+::: {.notes}
+unix system
+:::
+
+## There was a lot of excitement
+
+<!-- find blogs/announcements about MCPs, every company wanted to add to their product -->
+
+## Then, the backlash
+
+<!-- Security: both prompt injection and local code execution -->
+
+<!-- Bloat: lots of context taken up by MCP tool definitions -->
+
+## MCP is dead!
+
+<!-- blogs? -->
+
+<!-- Just use Skills! Or CLIs! -->
+
+<!-- that escalated quickly meme? -->
+
+## So why am I still talking about MCP?
+
+<!-- first walk through the points I hit at the beginning: auth, manage permissions, trim responses, do exactly what you want -->
+
+::: {.notes}
+To be specific, remote MCP servers that you write and host yourself
+:::
+
+<!-- Talk about FastMCP, examples? -->
+
+## Couldn't you just write a CLI instead?
+
+<!-- you could, and sure, go for it!--but:
+* Only useful to developers, using an agent that has shell. Can't use in other AI applications (confirm claude desktop can't)
+* Requires running code on the user's machine: has some advantages, but may not always be allowed (Windows??) or may not have access to private resources
+* Distribution problem: everyone has to download and install and update. Takes what is a security risk when using other people's MCP servers and turns it into an asset (you can push updates eagerly)
+ -->
+
+## What about Skills?
+
+<!-- Skills are great, and you probably want a skill to go alongside your MCP server to tell your agent how to use it. But Skills are just additional context, they aren't tools, they tell the agent how to use the tools that it already has.   -->
+
+## Deploying MCP servers
+
+<!-- Need to talk somewhere about hosting and deployment, Connect but also others, or just self host in docker or whatever inside your network, maybe that means you don't implement auth, but you can still benefit from the custom tools -->
+
+## When you should use MCP
+<!-- call back to the title? -->
+
+## When you should not
