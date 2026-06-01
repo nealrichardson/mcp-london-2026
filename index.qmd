@@ -73,17 +73,36 @@ editor:
 
 ##
 
-::: {.notes}
+<!-- ::: {.notes}
 (ask who has used an MCP server before. who has written an MCP server)
 
 I want to start with a story about how I came to understand what MCP was and what it was for. 
 
 For context, I should introduce myself
+::: -->
+
+::: {.columns}
+
+:::: {.column width="50%"}
+
+![](img/neal-with-book.jpg)
 :::
 
-##
+:::: {.column width="50%"}
+Hi, I'm Neal 👋
 
-<!-- Image of me -->
+* Open source and data
+
+* Apache Arrow PMC member
+
+* Currently VP Engineering at Posit
+
+* enpiar.com
+
+* arrowrbook.com
+::::
+
+:::
 
 ::: {.notes}
 I've done a few things etc.
@@ -93,39 +112,38 @@ Currently at Posit, and one of the teams I oversee is Posit Connect. (any Connec
 
 ##
 
-::: {.notes}
-Connect is ...
-It is not open source, it is enterprise software that supports you in building things with open source. 
+![](img/logo_connecttag-fullcolor.svg)
 
-(build to point about thinking about customer support from open-source maintainer lens: I want feedback on the product, and I want you to have a good experience giving it so that you'll come back and do it again. )
-(maybe not)
-:::
-
-## 
 
 ::: {.notes}
-Last year, we found ourselves getting more and more into using Claude Code. One of the great things about our current moment in the industry is that, for a well established software project--the Connect codebase is 10 years old--there is such an accumulation of projects and ideas and improvements that we all agree would be great to do, but, ugh, there is so much context to have to load into your brain in order to do it that it just feels overwhelming, so it doesn't get done. But now you can just fire off Claude on a git worktree and many times it just gets it done. 
+Connect is a platform for deploying and sharing custom apps, dashboards, reports, and APIs, things you write in the language or framework of your choice, whether that's Streamlit, Shiny, FastAPI, nodejs, quarto, and so on. 
+And, you can host MCP servers on it.
 :::
 
-## 
+## {background-image="img/kermit-typing.gif"}
 
 ::: {.notes}
-So, increasingly, I kept seeing problems and thinking, how can I use Claude to make it go away?
+
+Last year, we found ourselves getting more and more into using Claude Code. One of the great things about our current moment in the industry is that so many things that may have seemed hard or out of reach before are now available for us to do. It lets us be much more responsive to new ideas and requests--now we can just fire off Claude on a git worktree without having to do all of the context switching to consider it, and many times it just gets it done, or pretty close. 
 :::
 
-## 
+## {background-image="img/kermit-thinking.jpg"}
 
-![](img/kermit-phone.gif)
+<!-- TODO: crop differently -->
+
+::: {.notes}
+So, increasingly, I kept seeing problems and thinking, how can I use Claude to solve it? What else out there have we learned to be hard and painful that maybe isn't anymore?
+:::
+
+## {background-image="img/kermit-phone.gif"}
+
+<!-- ![](img/kermit-phone.gif) -->
 
 ::: {.notes}
 Responding to support escalations became one of them. Posit uses Zendesk for support, customers can file tickets there and they get fielded by our support team. When they get a clear bug report, or something that they can't answer on their own, it escalates to the engineers.
 
 I thought, Claude is good at reading the codebase, developing an understanding of how it works, and pinpointing bugs. But when fielding a support escalation, a human engineer still has to read the full Zendesk ticket history, sometimes download and extract server diagnostics that were uploaded, and synthesize that. How can I just plug Zendesk into Claude and let it figure it out?
-:::
 
-## 
-
-::: {.notes}
 I want to just take the ticket URL and give it to Claude Code like this:
 :::
 
@@ -166,7 +184,26 @@ However, this doesn't work.
   I don't have a Zendesk integration available in this session.
 
   Could you paste the ticket contents here?
+
+
 ```
+
+:::{.notes}
+This doesn't work. The first piece is authentication--I can't provide my credentials to connect to the Zendesk API. But even if I could, I would run into other challenges: the Zendesk REST API is not designed for AI agents to make efficient and secure use of it. 
+:::
+
+<!-- 
+## Problems
+
+* Authentication
+
+* Authorization needs to be restricted
+
+* REST API is too verbose
+
+* Sensitive data
+
+* Distribution
 
 ::: {.notes}
 
@@ -174,35 +211,32 @@ However, this doesn't work.
 * Authorization needs to be scoped. I don't want Claude to be able to do everything I can do.
 * (assume we could solve those) API is too verbose: context pollution from unnecessary fields.
 * Sensitive data: there is PII in there. I may not want that pulled into my agent session. I might not be allowed by company policy to use it. There may be regulations that say I can't. I don't really know and *really* don't want to find out.
-* (assume we get all of that right!) How do I make this available to my team? They would all benefit from this tool. But it sounds like a lot of logic I'll need. 
-:::
+* (assume we get all of that right!) How do I make this available to my team? They would all benefit from this tool. And then others outside my team, like the support team, who may not live in Claude Code?
+::: -->
 
-<!-- 
-CC can't read env vars
-Don't want your password or api key in the context anyway, that's a security risk
-even if it could, I wouldn't want it to have full access to everything I can do, and like many APIs, Zendesk doesn't let you precisely narrow the scope of a key you can grant it.
-also the API is verbose and contains a lot of details we don't need. that just pollutes the context and wastes tokens.
-and then even if I solve that for myself, I have a distribution problem, I need to make this available to everyone on the team. And potentially outside my team too: other teams, support itself.
- -->
-
-## MCP is designed to solve this
+## MCP is designed to solve this {.center}
 
 ::: {.notes}
-MCP offers a solution to this. It provides a way for you to authenticate securely to APIs, without giving your credentials to the agent. By writing a custom MCP server, you can control exactly what tools are made available and what capabilities they expose. And by hosting an MCP server, you can easily share it with others. 
+MCP offers a solution to this. 
+
+It provides a way for you to authenticate securely to APIs, without giving your credentials to the agent. 
+
+By writing a custom MCP server, you can control exactly what tools are made available and what capabilities they expose. This improves your agent's performance, and it also allows you to protect against a range of security vulnerabilties.
+
+And by hosting an MCP server, you can easily share it with others. 
 
 So today I'm going to talk about MCP, what it's good for and what it's less suited for, and some best practices from my experience. When it's the right tool for the job, MCP can unlock superpowers for your agentic workflows. And when done well, it can actually improve your security posture, which is especially important for AI agents.  
 :::
 
-## What is MCP?
+## What is MCP? {.center}
 
 ::: {.notes}
 first want to say what it is not
 :::
 
-## What MCP is not
+## {background-image="img/gob.gif"}
 
-<!-- GOB gif? -->
-
+<!-- :::{.notes}
 * AI
 
 * Vector database/RAG
@@ -210,37 +244,27 @@ first want to say what it is not
 * Magic
 
 ... but you can put any of those behind an MCP server, if you want
+::: -->
 
-## What is MCP?
+## MCP is specification for providing tools to LLMs
 
 ![](img/ikea.png)
 
-A specification for providing tools to LLMs
 
 :::{.notes}
-* Originally created by Anthropic in late 2024, and then put under a consortium under the Linux Foundation
-
 * Tools: functions that LLMs can call, the model "sees" that function exists, with a description telling it what it does, what the inputs are, and what the outputs are.
 
 * MCP defines a standard for servers that host tools, and how to register them in your client, any AI application
 :::
 
-## Remote vs. Local
-
-* Two kinds of MCP server: local and remote
-
-* Local runs on your computer, remote somewhere else you can reference by URL
-
-* For a few reasons, I'm going to focus only on remote MCP. I think this is the use case that has the most real value today. It also helps with the mental model:
-
 ## MCP is an API standard {.center}
 
 :::{.notes}
+* Originally created by Anthropic in late 2024, and then put under a consortium under the Linux Foundation
+
 * It's a standard for how to design APIs that AI applications can use
 
 * Remote MCP servers communicate over HTTP, basically JSON RPC with a set of well known endpoints and a schema for how tools are defined. 
-
-* Local MCP servers don't use HTTP but still are processes running on your machine that receive requests and return responses
 
 * Realizing that MCP was just a convention for how to set up API endpoints helped demystify it for me. As someone who has worked in software and data for many years, I know how to use an HTTP API, I know how to build and serve them too. 
 :::
@@ -249,10 +273,14 @@ A specification for providing tools to LLMs
 
 ![](img/unix-system.gif)
 
-
 ::: {.notes}
-You know what this is too. And your coding agents do too. s
+You know what this is too. And your coding agents do too.
 :::
+
+## Code is cheap {.center}
+<!-- TODO -->
+
+You can write your own easily that does exactly what you need
 
 ## There was a lot of excitement
 
@@ -272,43 +300,42 @@ https://hackernoon.com/mcp-is-dead-the-cli-is-winning-the-ai-agent-stack
 
 https://uxplanet.org/mcp-is-dead-cf16b667ba6d
 
-## {background-image="img/that-escalated-quickly.jpg"}
-
 ::: {.notes}
 Like most things, there is truth in both the initial excitement for MCP and the hard backlash against it. There weren't good alternatives to MCP when it came out, so people used it for all kinds of things and in questionable ways that today don't make sense. It's ideal for some use cases, and for others you are better off using a CLI. 
 
-To be specific, remote MCP servers that you write and host yourself. You can manage auth, customize how they respond and what they expose, and even get into fancier enterprise-y things like observability and auditing. 
-
 Critiques
 
-* Inherent risks with agentic AI
+* Best tool for the job
 
-* Best tool for the job: MCP, CLI, or Skills
+* Inherent risks with agentic AI
 
 * Best practices
 
 :::
 
-## Security
+<!-- ## Security
 
-* Arbitrary code execution--problem for local MCP if the command to run it is `npx some-random-github-repo` (find an example)
+### Untrusted code
 
-* (See other discussion Simon Willison about lethal trifecta and MCP exploits)
+* Arbitrary code execution--problem for local MCP if the command to run it is `npx some-random-github-repo` 
 
+* "tool poisoning": malicious actors putting instructions into tool definition that exfil  -->
 
 ## MCP, CLI, or Skill?
-
-* Critique that MCP takes up too much context: all tool definitions are loaded up front and take up tokens
-
-* Claude Code is good with CLIs: why use GitHub's MCP if `gh` is already right there?
 
 * If the agent can do everything with tools it already has (Bash, Fetch, etc.) then a Skill is probably enough
 
 * Otherwise, Skill is complement: we're talking (MCP + Skill) vs. (CLI + Skill)
 
+## (MCP + Skill) vs. (CLI + Skill)
+
+* Critique that MCP takes up too much context: all tool definitions are loaded up front and take up tokens
+
+* Claude Code is good with CLIs: why use GitHub's MCP if `gh` is already right there?
+
 * Use CLI when:
 
-    * CLI already exists (widely available and in the training data)
+    * CLI already exists, is widely available and in the training data
 
     * Your agent has Bash available to call the CLI
 
@@ -316,29 +343,116 @@ Critiques
 CLI not and option if the AI application can't run shell commands
 
 Distribution for remote MCP is also easier: single command to add a server by URL, rather than install CLI (and authenticate etc.) out of band
+
+To be specific, remote MCP servers that you write and host yourself. You can manage auth, customize how they respond and what they expose, and even get into fancier enterprise-y things like observability and auditing. 
+
+:::
+
+## Local vs. Remote MCP
+
+### Local
+
+* Runs on your machine
+* `claude mcp add name-here -- uvx --from "git+https://github.com/user/repo"`
+* Can access your local file system etc.
+
+## Local vs. Remote MCP
+
+### Local
+
+* Runs on your machine
+* `claude mcp add name-here -- uvx --from "git+https://github.com/user/repo"`
+* Can access your local file system etc.
+
+### Remote
+
+* Runs somewhere else
+* `claude mcp add --transport http name-here https://example.com/mcp`
+* **Cannot** access your local file system but can access whatever you give the server
+
+:::{.notes}
+For a few reasons, I'm going to focus on remote MCP, and in particular on remote MCP servers that you write to do exactly what you need. I think this is the use case that has the most real value today.
 :::
 
 ## More things you can do with remote MCP
 
-(that you can't with a CLI)
-
-* Authentication: OAuth 2.1 flow
+* Authentication: OAuth 2.1 flow, or via HTTP header
 
 * Accessing resources not available locally
 
 * Monitoring
 
+* Easy distribution via URL
+
 :::{.notes}
+These are things you just can't do with a CLI
+
 You (or your agent) could build these into your server, or you could deploy on a platform (like Connect) that gives you these for free.
 :::
 
-## Best practices
+## Security
 
-* Only define the tools you need
+### Lethal Trifecta
 
-* Make responses concise
+* Access to private data
 
-* Sanitize sensitive data
+* Exposure to untrusted content
+
+* Ability to exfiltrate
+
+https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/
+
+:::{.notes}
+"If your agent combines these three features, an attacker can easily trick it into accessing your private data and sending it to that attacker."
+
+Opening your agent up to external resources and code creates the opportunity for the lethal trifecta. This is not specific to MCP but there were some very public examples of exploits in the early months of MCP. 
+
+It's not just that the MCP server itself may be malicious. Suppose you're reading GitHub issues on a public repo, whether with GitHub MCP or the `gh` CLI. Someone could write a prompt injection into an issue, and that gives you one of the three of the trifecta. Presumably you're doing something with private data already so that's two. So if your agent has any ability to send data out, some other tool that lets it, you've got the trifecta.
+:::
+
+## Best practices {.center}
+
+### 1. Only define the tools you need
+
+:::{.notes}
+To reiterate, I'm talking about writing and deploying your own remote MCP servers
+
+One reason is for efficiency:
+
+Every tool definition consumes context in your agent. That's tokens. Both money and distraction from what your real question is. 
+
+So, unlike when you're making a REST API to interact with via other software, or a web app, or whatever, you want a small number of tools that do exactly what you want. Any more than that has a cost.
+
+Another reason is security: do you really need tools that can write?
+
+If the answer is "sometimes", make more than one server, or make it configurable and make different deployments, or have some other means of allowing users of your MCP server to select only what they need?
+:::
+
+## Best practices {.center}
+
+### 2. Make responses concise
+
+:::{.notes}
+Brevity is the soul of wit (had to get one Hamlet reference in here, given the title)
+
+When you're working with an API that's designed for developers to work with, or web apps to build on, the API responses for a given record can include lots of details. And that makes sense when you're a (human) developer, you can select out the bits you want and ignore the rest.
+
+But with LLMs, everything you return goes into the context. Again, that's more tokens, and more confusion. So we want to scope our MCP tools to only return the pieces that matter for the task you're asking the agent to do.
+
+For example, in the Zendesk API for ticket comments, every comment entry includes metadata about whether the comment was sent through the web portal or email or whatever, and potentially things like the user agent string and location of the browser where the person typed their comment. Could be useful for something, I guess, but not for answering the kinds of questions I'm asking. So we can cut it.
+:::
+
+## Best practices {.center}
+
+### 3. Sanitize sensitive data
+
+`n***@posit.co`
+
+:::{.notes}
+Finally, thinking back to the lethal trifecta, or even just good data goverance hygiene. If there are personally identifying details in the data you're pulling in, and you don't need them to answer your questions, you can either prune them entirely or redact them. 
+
+In this example, we can keep the information that a user from Posit reported this issue, which could be useful--maybe I want to look up other issues reported by this company--but the personal identity does not leak out.
+:::
 
 <!-- first walk through the points I hit at the beginning: auth, manage permissions, trim responses, do exactly what you want 
 
@@ -346,9 +460,12 @@ See also https://chrlschn.dev/blog/2026/03/mcp-is-dead-long-live-mcp/
 
 -->
 
-## Code is cheap
 
-You can write your own easily that does exactly what you need, whether it is exposing 
+<!-- TODO need to conclude this talk -->
+
+
+
+
 
 ## What do we need?
 
