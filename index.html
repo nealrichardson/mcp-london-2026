@@ -271,25 +271,26 @@ Neal Richardson
 </section>
 <section id="section" class="slide level2">
 <h2></h2>
-<aside class="notes">
-<p>(ask who has used an MCP server before. who has written an MCP server)</p>
-<p>I want to start with a story about how I came to understand what MCP was and what it was for.</p>
-<p>For context, I should introduce myself</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-1" class="slide level2">
-<h2></h2>
-<!-- Image of me -->
+<!-- ::: {.notes}
+(ask who has used an MCP server before. who has written an MCP server)
+
+I want to start with a story about how I came to understand what MCP was and what it was for. 
+
+For context, I should introduce myself
+::: -->
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><img data-src="img/neal-with-book.jpg"></p>
+</div><div class="column" style="width:50%;">
+<p>Hi, I’m Neal 👋</p>
+<ul>
+<li><p>Open source and data</p></li>
+<li><p>Apache Arrow PMC member</p></li>
+<li><p>Currently VP Engineering at Posit</p></li>
+<li><p>enpiar.com</p></li>
+<li><p>arrowrbook.com</p></li>
+</ul>
+</div></div>
 <aside class="notes">
 <p>I’ve done a few things etc. Open source, Apache Arrow for many years, was chair of project management committee last year. Currently at Posit, and one of the teams I oversee is Posit Connect. (any Connect users out there?)</p>
 <style type="text/css">
@@ -304,61 +305,11 @@ Neal Richardson
           display:block!important;
       }</style></aside>
 </section>
-<section id="section-2" class="slide level2">
-<h2></h2>
-<aside class="notes">
-<p>Connect is … It is not open source, it is enterprise software that supports you in building things with open source.</p>
-<p>(build to point about thinking about customer support from open-source maintainer lens: I want feedback on the product, and I want you to have a good experience giving it so that you’ll come back and do it again. ) (maybe not)</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-3" class="slide level2">
-<h2></h2>
-<aside class="notes">
-<p>Last year, we found ourselves getting more and more into using Claude Code. One of the great things about our current moment in the industry is that, for a well established software project–the Connect codebase is 10 years old–there is such an accumulation of projects and ideas and improvements that we all agree would be great to do, but, ugh, there is so much context to have to load into your brain in order to do it that it just feels overwhelming, so it doesn’t get done. But now you can just fire off Claude on a git worktree and many times it just gets it done.</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-4" class="slide level2">
-<h2></h2>
-<aside class="notes">
-<p>So, increasingly, I kept seeing problems and thinking, how can I use Claude to make it go away?</p>
-<style type="text/css">
-        span.MJX_Assistive_MathML {
-          position:absolute!important;
-          clip: rect(1px, 1px, 1px, 1px);
-          padding: 1px 0 0 0!important;
-          border: 0!important;
-          height: 1px!important;
-          width: 1px!important;
-          overflow: hidden!important;
-          display:block!important;
-      }</style></aside>
-</section>
-<section id="section-5" class="slide level2">
+<section id="section-1" class="slide level2">
 <h2></h2>
 
-<img data-src="img/kermit-phone.gif" class="r-stretch"><aside class="notes">
-<p>Responding to support escalations became one of them. Posit uses Zendesk for support, customers can file tickets there and they get fielded by our support team. When they get a clear bug report, or something that they can’t answer on their own, it escalates to the engineers.</p>
-<p>I thought, Claude is good at reading the codebase, developing an understanding of how it works, and pinpointing bugs. But when fielding a support escalation, a human engineer still has to read the full Zendesk ticket history, sometimes download and extract server diagnostics that were uploaded, and synthesize that. How can I just plug Zendesk into Claude and let it figure it out?</p>
+<img data-src="img/logo_connecttag-fullcolor.svg" class="r-stretch"><aside class="notes">
+<p>Connect is a platform for deploying and sharing custom apps, dashboards, reports, and APIs, things you write in the language or framework of your choice, whether that’s Streamlit, Shiny, FastAPI, nodejs, quarto, and so on. And, you can host MCP servers on it.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -371,9 +322,45 @@ Neal Richardson
           display:block!important;
       }</style></aside>
 </section>
-<section id="section-6" class="slide level2">
+<section id="section-2" class="slide level2" data-background-image="img/kermit-typing.gif">
 <h2></h2>
 <aside class="notes">
+<p>Last year, we found ourselves getting more and more into using Claude Code. One of the great things about our current moment in the industry is that so many things that may have seemed hard or out of reach before are now available for us to do. It lets us be much more responsive to new ideas and requests–now we can just fire off Claude on a git worktree without having to do all of the context switching to consider it, and many times it just gets it done, or pretty close.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-3" class="slide level2" data-background-image="img/kermit-thinking.jpg">
+<h2></h2>
+<!-- TODO: crop differently -->
+<aside class="notes">
+<p>So, increasingly, I kept seeing problems and thinking, how can I use Claude to solve it? What else out there have we learned to be hard and painful that maybe isn’t anymore?</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="section-4" class="slide level2" data-background-image="img/kermit-phone.gif">
+<h2></h2>
+<!-- ![](img/kermit-phone.gif) -->
+<aside class="notes">
+<p>Responding to support escalations became one of them. Posit uses Zendesk for support, customers can file tickets there and they get fielded by our support team. When they get a clear bug report, or something that they can’t answer on their own, it escalates to the engineers.</p>
+<p>I thought, Claude is good at reading the codebase, developing an understanding of how it works, and pinpointing bugs. But when fielding a support escalation, a human engineer still has to read the full Zendesk ticket history, sometimes download and extract server diagnostics that were uploaded, and synthesize that. How can I just plug Zendesk into Claude and let it figure it out?</p>
 <p>I want to just take the ticket URL and give it to Claude Code like this:</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -387,7 +374,7 @@ Neal Richardson
           display:block!important;
       }</style></aside>
 </section>
-<section id="section-7" class="slide level2">
+<section id="section-5" class="slide level2">
 <h2></h2>
 <pre><code> ▐▛███▜▌   Claude Code v2.1.158
 ▝▜█████▛▘  Opus 4.8 (1M context) · Claude Enterprise
@@ -411,7 +398,7 @@ Neal Richardson
           display:block!important;
       }</style></aside>
 </section>
-<section id="section-8" class="slide level2">
+<section id="section-6" class="slide level2">
 <h2></h2>
 <pre><code> ▐▛███▜▌   Claude Code v2.1.158
 ▝▜█████▛▘  Opus 4.8 (1M context) · Claude Enterprise
@@ -429,15 +416,11 @@ Neal Richardson
 ⏺ The ticket is behind Zendesk's authentication, so I can't fetch it directly — WebFetch only works on public URLs, and
   I don't have a Zendesk integration available in this session.
 
-  Could you paste the ticket contents here?</code></pre>
+  Could you paste the ticket contents here?
+
+</code></pre>
 <aside class="notes">
-<ul>
-<li>Authentication is needed. Claude can’t read my environment variables, and I don’t want to paste my API key or password into the context–that’s dangerous.</li>
-<li>Authorization needs to be scoped. I don’t want Claude to be able to do everything I can do.</li>
-<li>(assume we could solve those) API is too verbose: context pollution from unnecessary fields.</li>
-<li>Sensitive data: there is PII in there. I may not want that pulled into my agent session. I might not be allowed by company policy to use it. There may be regulations that say I can’t. I don’t really know and <em>really</em> don’t want to find out.</li>
-<li>(assume we get all of that right!) How do I make this available to my team? They would all benefit from this tool. But it sounds like a lot of logic I’ll need.</li>
-</ul>
+<p>The first piece is authentication–I can’t provide my credentials to connect to the Zendesk API. But even if I could, I would run into other challenges: the Zendesk REST API is not designed for AI agents to make efficient and secure use of it.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -450,18 +433,37 @@ Neal Richardson
           display:block!important;
       }</style></aside>
 <!-- 
-CC can't read env vars
-Don't want your password or api key in the context anyway, that's a security risk
-even if it could, I wouldn't want it to have full access to everything I can do, and like many APIs, Zendesk doesn't let you precisely narrow the scope of a key you can grant it.
-also the API is verbose and contains a lot of details we don't need. that just pollutes the context and wastes tokens.
-and then even if I solve that for myself, I have a distribution problem, I need to make this available to everyone on the team. And potentially outside my team too: other teams, support itself.
- -->
+## Problems
+
+* Authentication
+
+* Authorization needs to be restricted
+
+* REST API is too verbose
+
+* Sensitive data
+
+* Distribution
+
+::: {.notes}
+
+* Authentication is needed. Claude can't read my environment variables, and I don't want to paste my API key or password into the context--that's dangerous.
+* Authorization needs to be scoped. I don't want Claude to be able to do everything I can do.
+* (assume we could solve those) API is too verbose: context pollution from unnecessary fields.
+* Sensitive data: there is PII in there. I may not want that pulled into my agent session. I might not be allowed by company policy to use it. There may be regulations that say I can't. I don't really know and *really* don't want to find out.
+* (assume we get all of that right!) How do I make this available to my team? They would all benefit from this tool. And then others outside my team, like the support team, who may not live in Claude Code?
+::: -->
 </section>
-<section id="mcp-is-designed-to-solve-this" class="slide level2">
+<section id="mcp-is-designed-to-solve-this" class="slide level2 center">
 <h2>MCP is designed to solve this</h2>
+<h3 id="space"><span style="color: white;">space</span></h3>
 <aside class="notes">
-<p>MCP offers a solution to this. It provides a way for you to authenticate securely to APIs, without giving your credentials to the agent. By writing a custom MCP server, you can control exactly what tools are made available and what capabilities they expose. And by hosting an MCP server, you can easily share it with others.</p>
+<p>MCP offers a solution to this.</p>
+<p>It provides a way for you to authenticate securely to APIs, without giving your credentials to the agent.</p>
+<p>By writing a custom MCP server, you can control exactly what tools are made available and what capabilities they expose. This improves your agent’s performance, and it also allows you to protect against a range of security vulnerabilties.</p>
+<p>And by hosting an MCP server, you can easily share it with others.</p>
 <p>So today I’m going to talk about MCP, what it’s good for and what it’s less suited for, and some best practices from my experience. When it’s the right tool for the job, MCP can unlock superpowers for your agentic workflows. And when done well, it can actually improve your security posture, which is especially important for AI agents.</p>
+<p>A central point I want to land, and that really underlies everything in the talk:</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -474,7 +476,41 @@ and then even if I solve that for myself, I have a distribution problem, I need 
           display:block!important;
       }</style></aside>
 </section>
-<section id="what-is-mcp" class="slide level2">
+<section id="you-can-write-and-host-your-own-mcp-servers" class="slide level2 center">
+<h2>You can write and host your own MCP servers</h2>
+<h3 id="httpsgithub.comnealrichardsonzendesk-mcp-server"><span style="color: white;">https://github.com/nealrichardson/zendesk-mcp-server</span></h3>
+<aside class="notes">
+<p>To do exactly what you need. Because code is now cheap. So my talk is going to be oriented about writing your own, not about whether or not you should use an MCP server that someone else provides. Even when someone else’s hosted MCP server is available to you, you may have reasons for wanting to customize it, as I will show. And thanks to AI, this is all available to you now.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="you-can-write-and-host-your-own-mcp-servers-1" class="slide level2 center">
+<h2>You can write and host your own MCP servers</h2>
+<h3 id="httpsgithub.comnealrichardsonzendesk-mcp-server-1">https://github.com/nealrichardson/zendesk-mcp-server</h3>
+<aside class="notes">
+<p>To do exactly what you need. Because code is now cheap. So my talk is going to be oriented about writing your own, not about whether or not you should use an MCP server that someone else provides. Even when someone else’s hosted MCP server is available to you, you may have reasons for wanting to customize it, as I will show. And thanks to AI, this is all available to you now.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="what-is-mcp" class="slide level2 center">
 <h2>What is MCP?</h2>
 <aside class="notes">
 <p>first want to say what it is not</p>
@@ -490,23 +526,23 @@ and then even if I solve that for myself, I have a distribution problem, I need 
           display:block!important;
       }</style></aside>
 </section>
-<section id="what-mcp-is-not" class="slide level2">
-<h2>What MCP is not</h2>
-<!-- GOB gif? -->
-<ul>
-<li><p>AI</p></li>
-<li><p>Vector database/RAG</p></li>
-<li><p>Magic</p></li>
-</ul>
-<p>… but you can put any of those behind an MCP server, if you want</p>
-</section>
-<section id="what-is-mcp-1" class="slide level2">
-<h2>What is MCP?</h2>
+<section id="section-7" class="slide level2" data-background-image="img/gob.gif">
+<h2></h2>
+<!-- :::{.notes}
+* AI
 
-<img data-src="img/ikea.png" class="r-stretch"><p>A specification for providing tools to LLMs</p>
-<aside class="notes">
+* Vector database/RAG
+
+* Magic
+
+... but you can put any of those behind an MCP server, if you want
+::: -->
+</section>
+<section id="mcp-is-specification-for-providing-tools-to-llms" class="slide level2">
+<h2>MCP is specification for providing tools to LLMs</h2>
+
+<img data-src="img/ikea.png" class="r-stretch"><aside class="notes">
 <ul>
-<li><p>Originally created by Anthropic in late 2024, and then put under a consortium under the Linux Foundation</p></li>
 <li><p>Tools: functions that LLMs can call, the model “sees” that function exists, with a description telling it what it does, what the inputs are, and what the outputs are.</p></li>
 <li><p>MCP defines a standard for servers that host tools, and how to register them in your client, any AI application</p></li>
 </ul>
@@ -522,21 +558,50 @@ and then even if I solve that for myself, I have a distribution problem, I need 
           display:block!important;
       }</style></aside>
 </section>
-<section id="remote-vs.-local" class="slide level2">
-<h2>Remote vs.&nbsp;Local</h2>
+<section id="local-vs.-remote-mcp" class="slide level2">
+<h2>Local vs.&nbsp;Remote MCP</h2>
+<h3 id="local">Local</h3>
 <ul>
-<li><p>Two kinds of MCP server: local and remote</p></li>
-<li><p>Local runs on your computer, remote somewhere else you can reference by URL</p></li>
-<li><p>For a few reasons, I’m going to focus only on remote MCP. I think this is the use case that has the most real value today. It also helps with the mental model:</p></li>
+<li>Runs on your machine</li>
+<li><code>claude mcp add name-here -- uvx --from "git+https://github.com/user/repo"</code></li>
+<li>Can access your local file system etc.</li>
 </ul>
+</section>
+<section id="local-vs.-remote-mcp-1" class="slide level2">
+<h2>Local vs.&nbsp;Remote MCP</h2>
+<h3 id="local-1">Local</h3>
+<ul>
+<li>Runs on your machine</li>
+<li><code>claude mcp add name-here -- uvx --from "git+https://github.com/user/repo"</code></li>
+<li>Can access your local file system etc.</li>
+</ul>
+<h3 id="remote">Remote</h3>
+<ul>
+<li>Runs somewhere else</li>
+<li><code>claude mcp add --transport http name-here https://example.com/mcp</code></li>
+<li><strong>Cannot</strong> access your local file system but can access whatever you give the server</li>
+</ul>
+<aside class="notes">
+<p>For a few reasons, I’m going to focus on remote MCP, and in particular on remote MCP servers that you write to do exactly what you need. I think this is the use case that has the most real value today.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 </section>
 <section id="mcp-is-an-api-standard" class="slide level2 center">
 <h2>MCP is an API standard</h2>
 <aside class="notes">
 <ul>
+<li><p>Originally created by Anthropic in late 2024, and then put under a consortium under the Linux Foundation</p></li>
 <li><p>It’s a standard for how to design APIs that AI applications can use</p></li>
 <li><p>Remote MCP servers communicate over HTTP, basically JSON RPC with a set of well known endpoints and a schema for how tools are defined.</p></li>
-<li><p>Local MCP servers don’t use HTTP but still are processes running on your machine that receive requests and return responses</p></li>
 <li><p>Realizing that MCP was just a convention for how to set up API endpoints helped demystify it for me. As someone who has worked in software and data for many years, I know how to use an HTTP API, I know how to build and serve them too.</p></li>
 </ul>
 <style type="text/css">
@@ -551,11 +616,11 @@ and then even if I solve that for myself, I have a distribution problem, I need 
           display:block!important;
       }</style></aside>
 </section>
-<section id="section-9" class="slide level2">
+<section id="section-8" class="slide level2">
 <h2></h2>
 
 <img data-src="img/unix-system.gif" class="r-stretch"><aside class="notes">
-<p>You know what this is too. And your coding agents do too. s</p>
+<p>You know what this is too. And your coding agents do too.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -575,6 +640,7 @@ and then even if I solve that for myself, I have a distribution problem, I need 
 </section>
 <section id="then-the-backlash" class="slide level2">
 <h2>Then, the backlash</h2>
+<!-- TODO distracted boyfriend meme -->
 
 <img data-src="img/cli-is-winning.png" class="r-stretch"><p>https://hackernoon.com/mcp-is-dead-the-cli-is-winning-the-ai-agent-stack</p>
 </section>
@@ -582,16 +648,12 @@ and then even if I solve that for myself, I have a distribution problem, I need 
 <h2>Then, the backlash</h2>
 
 <img data-src="img/mcp-is-dead.png" class="r-stretch"><p>https://uxplanet.org/mcp-is-dead-cf16b667ba6d</p>
-</section>
-<section id="section-10" class="slide level2" data-background-image="img/that-escalated-quickly.jpg">
-<h2></h2>
 <aside class="notes">
 <p>Like most things, there is truth in both the initial excitement for MCP and the hard backlash against it. There weren’t good alternatives to MCP when it came out, so people used it for all kinds of things and in questionable ways that today don’t make sense. It’s ideal for some use cases, and for others you are better off using a CLI.</p>
-<p>To be specific, remote MCP servers that you write and host yourself. You can manage auth, customize how they respond and what they expose, and even get into fancier enterprise-y things like observability and auditing.</p>
 <p>Critiques</p>
 <ul>
+<li><p>Best tool for the job</p></li>
 <li><p>Inherent risks with agentic AI</p></li>
-<li><p>Best tool for the job: MCP, CLI, or Skills</p></li>
 <li><p>Best practices</p></li>
 </ul>
 <style type="text/css">
@@ -605,30 +667,37 @@ and then even if I solve that for myself, I have a distribution problem, I need 
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
-</section>
-<section id="security" class="slide level2">
-<h2>Security</h2>
-<ul>
-<li><p>Arbitrary code execution–problem for local MCP if the command to run it is <code>npx some-random-github-repo</code> (find an example)</p></li>
-<li><p>(See other discussion Simon Willison about lethal trifecta and MCP exploits)</p></li>
-</ul>
+<!-- ## Security
+
+### Untrusted code
+
+* Arbitrary code execution--problem for local MCP if the command to run it is `npx some-random-github-repo` 
+
+* "tool poisoning": malicious actors putting instructions into tool definition that exfil  -->
 </section>
 <section id="mcp-cli-or-skill" class="slide level2">
 <h2>MCP, CLI, or Skill?</h2>
 <ul>
-<li><p>Critique that MCP takes up too much context: all tool definitions are loaded up front and take up tokens</p></li>
-<li><p>Claude Code is good with CLIs: why use GitHub’s MCP if <code>gh</code> is already right there?</p></li>
 <li><p>If the agent can do everything with tools it already has (Bash, Fetch, etc.) then a Skill is probably enough</p></li>
 <li><p>Otherwise, Skill is complement: we’re talking (MCP + Skill) vs.&nbsp;(CLI + Skill)</p></li>
+</ul>
+</section>
+<section id="mcp-skill-vs.-cli-skill" class="slide level2">
+<h2>(MCP + Skill) vs.&nbsp;(CLI + Skill)</h2>
+<!-- TODO red button meme? -->
+<ul>
+<li><p>Critique that MCP takes up too much context: all tool definitions are loaded up front and take up tokens</p></li>
+<li><p>Claude Code is good with CLIs: why use GitHub’s MCP if <code>gh</code> is already right there?</p></li>
 <li><p>Use CLI when:</p>
 <ul>
-<li><p>CLI already exists (widely available and in the training data)</p></li>
+<li><p>CLI already exists, is widely available and in the training data</p></li>
 <li><p>Your agent has Bash available to call the CLI</p></li>
 </ul></li>
 </ul>
 <aside class="notes">
 <p>CLI not and option if the AI application can’t run shell commands</p>
 <p>Distribution for remote MCP is also easier: single command to add a server by URL, rather than install CLI (and authenticate etc.) out of band</p>
+<p>To be specific, remote MCP servers that you write and host yourself. You can manage auth, customize how they respond and what they expose, and even get into fancier enterprise-y things like observability and auditing.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -643,13 +712,14 @@ and then even if I solve that for myself, I have a distribution problem, I need 
 </section>
 <section id="more-things-you-can-do-with-remote-mcp" class="slide level2">
 <h2>More things you can do with remote MCP</h2>
-<p>(that you can’t with a CLI)</p>
 <ul>
-<li><p>Authentication: OAuth 2.1 flow</p></li>
+<li><p>Authentication: OAuth 2.1 flow, or via HTTP header</p></li>
 <li><p>Accessing resources not available locally</p></li>
 <li><p>Monitoring</p></li>
+<li><p>Easy distribution via URL</p></li>
 </ul>
 <aside class="notes">
+<p>These are things you just can’t do with a CLI</p>
 <p>You (or your agent) could build these into your server, or you could deploy on a platform (like Connect) that gives you these for free.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
@@ -663,22 +733,113 @@ and then even if I solve that for myself, I have a distribution problem, I need 
           display:block!important;
       }</style></aside>
 </section>
-<section id="best-practices" class="slide level2">
-<h2>Best practices</h2>
+<section id="security" class="slide level2">
+<h2>Security</h2>
+<h3 id="lethal-trifecta">Lethal Trifecta</h3>
 <ul>
-<li><p>Only define the tools you need</p></li>
-<li><p>Make responses concise</p></li>
-<li><p>Sanitize sensitive data</p></li>
+<li><p>Access to private data</p></li>
+<li><p>Exposure to untrusted content</p></li>
+<li><p>Ability to exfiltrate</p></li>
 </ul>
+<p>https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/</p>
+<aside class="notes">
+<p>“If your agent combines these three features, an attacker can easily trick it into accessing your private data and sending it to that attacker.”</p>
+<p>Opening your agent up to external resources and code creates the opportunity for the lethal trifecta. This is not specific to MCP but there were some very public examples of exploits in the early months of MCP.</p>
+<p>It’s not just that the MCP server itself may be malicious. Suppose you’re reading GitHub issues on a public repo, whether with GitHub MCP or the <code>gh</code> CLI. Someone could write a prompt injection into an issue, and that gives you one of the three of the trifecta. Presumably you’re doing something with private data already so that’s two. So if your agent has any ability to send data out, some other tool that lets it, you’ve got the trifecta.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="best-practices" class="slide level2 center">
+<h2>Best practices</h2>
+<h3 id="brevity-is-the-soul-of-wit">Brevity is the soul of wit</h3>
+</section>
+<section id="best-practices-1" class="slide level2 center">
+<h2>Best practices</h2>
+<h3 id="only-define-the-tools-you-need">1. Only define the tools you need</h3>
+<aside class="notes">
+<p>To reiterate, I’m talking about writing and deploying your own remote MCP servers</p>
+<p>One reason is for efficiency:</p>
+<p>Every tool definition consumes context in your agent. That’s tokens. Both money and distraction from what your real question is.</p>
+<p>So, unlike when you’re making a REST API to interact with via other software, or a web app, or whatever, you want a small number of tools that do exactly what you want. Any more than that has a cost.</p>
+<p>Another reason is security: do you really need tools that can write?</p>
+<p>If the answer is “sometimes”, make more than one server, or make it configurable and make different deployments, or have some other means of allowing users of your MCP server to select only what they need?</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="best-practices-2" class="slide level2 center">
+<h2>Best practices</h2>
+<h3 id="make-responses-concise">2. Make responses concise</h3>
+<aside class="notes">
+<p>Brevity is the soul of wit (had to get one Hamlet reference in here, given the title)</p>
+<p>When you’re working with an API that’s designed for developers to work with, or web apps to build on, the API responses for a given record can include lots of details. And that makes sense when you’re a (human) developer, you can select out the bits you want and ignore the rest.</p>
+<p>But with LLMs, everything you return goes into the context. Again, that’s more tokens, and more confusion. So we want to scope our MCP tools to only return the pieces that matter for the task you’re asking the agent to do.</p>
+<p>For example, in the Zendesk API for ticket comments, every comment entry includes metadata about whether the comment was sent through the web portal or email or whatever, and potentially things like the user agent string and location of the browser where the person typed their comment. Could be useful for something, I guess, but not for answering the kinds of questions I’m asking. So we can cut it.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="best-practices-3" class="slide level2 center">
+<h2>Best practices</h2>
+<h3 id="sanitize-sensitive-data">3. Sanitize sensitive data</h3>
+<p><code>n***@posit.co</code></p>
+<aside class="notes">
+<p>Finally, thinking back to the lethal trifecta, or even just good data goverance hygiene. If there are personally identifying details in the data you’re pulling in, and you don’t need them to answer your questions, you can either prune them entirely or redact them.</p>
+<p>In this example, we can keep the information that a user from Posit reported this issue, which could be useful–maybe I want to look up other issues reported by this company–but the personal identity does not leak out.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
 <!-- first walk through the points I hit at the beginning: auth, manage permissions, trim responses, do exactly what you want 
 
 See also https://chrlschn.dev/blog/2026/03/mcp-is-dead-long-live-mcp/
 
 -->
 </section>
-<section id="code-is-cheap" class="slide level2">
-<h2>Code is cheap</h2>
-<p>You can write your own easily that does exactly what you need, whether it is exposing</p>
+<section id="mcp-or-not-mcp" class="slide level2">
+<h2>MCP, or not MCP?</h2>
+<!-- TODO finish this -->
+<ul>
+<li><p>Writing and deploying your own remote MCP servers can unlock massive value</p></li>
+<li><p>AI brings inherent security risks, but a well designed MCP server can mitigate them</p></li>
+<li></li>
+</ul>
+</section>
+<section id="thank-you" class="slide level2">
+<h2>Thank you</h2>
+<!-- TODO link and QR to slides on my website -->
 </section>
 <section id="what-do-we-need" class="slide level2">
 <h2>What do we need?</h2>
@@ -704,7 +865,7 @@ See also https://chrlschn.dev/blog/2026/03/mcp-is-dead-long-live-mcp/
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href=""></a><span class="im">from</span> fastmcp <span class="im">import</span> FastMCP</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href=""></a><span class="im">from</span> mcp.server.fastmcp <span class="im">import</span> FastMCP</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="section-11" class="slide level2">
+<section id="section-9" class="slide level2">
 <h2></h2>
 <p>Zendesk MCP example: https://github.com/nealrichardson/zendesk-mcp-server</p>
 <aside class="notes">

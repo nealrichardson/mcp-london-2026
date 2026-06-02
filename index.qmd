@@ -189,7 +189,7 @@ However, this doesn't work.
 ```
 
 :::{.notes}
-This doesn't work. The first piece is authentication--I can't provide my credentials to connect to the Zendesk API. But even if I could, I would run into other challenges: the Zendesk REST API is not designed for AI agents to make efficient and secure use of it. 
+The first piece is authentication--I can't provide my credentials to connect to the Zendesk API. But even if I could, I would run into other challenges: the Zendesk REST API is not designed for AI agents to make efficient and secure use of it. 
 :::
 
 <!-- 
@@ -216,6 +216,8 @@ This doesn't work. The first piece is authentication--I can't provide my credent
 
 ## MCP is designed to solve this {.center}
 
+### [space]{style="color: white;"}
+
 ::: {.notes}
 MCP offers a solution to this. 
 
@@ -225,8 +227,27 @@ By writing a custom MCP server, you can control exactly what tools are made avai
 
 And by hosting an MCP server, you can easily share it with others. 
 
-So today I'm going to talk about MCP, what it's good for and what it's less suited for, and some best practices from my experience. When it's the right tool for the job, MCP can unlock superpowers for your agentic workflows. And when done well, it can actually improve your security posture, which is especially important for AI agents.  
+So today I'm going to talk about MCP, what it's good for and what it's less suited for, and some best practices from my experience. When it's the right tool for the job, MCP can unlock superpowers for your agentic workflows. And when done well, it can actually improve your security posture, which is especially important for AI agents.
+
+A central point I want to land, and that really underlies everything in the talk:
 :::
+
+## You can write and host your own MCP servers {.center}
+
+### [https://github.com/nealrichardson/zendesk-mcp-server]{style="color: white;"}
+
+:::{.notes}
+To do exactly what you need. Because code is now cheap. So my talk is going to be oriented about writing your own, not about whether or not you should use an MCP server that someone else provides. Even when someone else's hosted MCP server is available to you, you may have reasons for wanting to customize it, as I will show. And thanks to AI, this is all available to you now.
+:::
+
+## You can write and host your own MCP servers {.center}
+
+### https://github.com/nealrichardson/zendesk-mcp-server
+
+:::{.notes}
+To do exactly what you need. Because code is now cheap. So my talk is going to be oriented about writing your own, not about whether or not you should use an MCP server that someone else provides. Even when someone else's hosted MCP server is available to you, you may have reasons for wanting to customize it, as I will show. And thanks to AI, this is all available to you now.
+:::
+
 
 ## What is MCP? {.center}
 
@@ -257,6 +278,32 @@ first want to say what it is not
 * MCP defines a standard for servers that host tools, and how to register them in your client, any AI application
 :::
 
+## Local vs. Remote MCP
+
+### Local
+
+* Runs on your machine
+* `claude mcp add name-here -- uvx --from "git+https://github.com/user/repo"`
+* Can access your local file system etc.
+
+## Local vs. Remote MCP
+
+### Local
+
+* Runs on your machine
+* `claude mcp add name-here -- uvx --from "git+https://github.com/user/repo"`
+* Can access your local file system etc.
+
+### Remote
+
+* Runs somewhere else
+* `claude mcp add --transport http name-here https://example.com/mcp`
+* **Cannot** access your local file system but can access whatever you give the server
+
+:::{.notes}
+For a few reasons, I'm going to focus on remote MCP, and in particular on remote MCP servers that you write to do exactly what you need. I think this is the use case that has the most real value today.
+:::
+
 ## MCP is an API standard {.center}
 
 :::{.notes}
@@ -277,11 +324,6 @@ first want to say what it is not
 You know what this is too. And your coding agents do too.
 :::
 
-## Code is cheap {.center}
-<!-- TODO -->
-
-You can write your own easily that does exactly what you need
-
 ## There was a lot of excitement
 
 ![](img/mind-blown-with-mcp.png)
@@ -289,7 +331,7 @@ You can write your own easily that does exactly what you need
 https://www.reddit.com/r/mcp/comments/1jn3ykp/mind_blown_with_mcp/
 
 ## Then, the backlash
-
+<!-- TODO distracted boyfriend meme -->
 ![](img/cli-is-winning.png)
 
 https://hackernoon.com/mcp-is-dead-the-cli-is-winning-the-ai-agent-stack
@@ -329,6 +371,8 @@ Critiques
 
 ## (MCP + Skill) vs. (CLI + Skill)
 
+<!-- TODO red button meme? -->
+
 * Critique that MCP takes up too much context: all tool definitions are loaded up front and take up tokens
 
 * Claude Code is good with CLIs: why use GitHub's MCP if `gh` is already right there?
@@ -346,32 +390,6 @@ Distribution for remote MCP is also easier: single command to add a server by UR
 
 To be specific, remote MCP servers that you write and host yourself. You can manage auth, customize how they respond and what they expose, and even get into fancier enterprise-y things like observability and auditing. 
 
-:::
-
-## Local vs. Remote MCP
-
-### Local
-
-* Runs on your machine
-* `claude mcp add name-here -- uvx --from "git+https://github.com/user/repo"`
-* Can access your local file system etc.
-
-## Local vs. Remote MCP
-
-### Local
-
-* Runs on your machine
-* `claude mcp add name-here -- uvx --from "git+https://github.com/user/repo"`
-* Can access your local file system etc.
-
-### Remote
-
-* Runs somewhere else
-* `claude mcp add --transport http name-here https://example.com/mcp`
-* **Cannot** access your local file system but can access whatever you give the server
-
-:::{.notes}
-For a few reasons, I'm going to focus on remote MCP, and in particular on remote MCP servers that you write to do exactly what you need. I think this is the use case that has the most real value today.
 :::
 
 ## More things you can do with remote MCP
@@ -409,6 +427,10 @@ Opening your agent up to external resources and code creates the opportunity for
 
 It's not just that the MCP server itself may be malicious. Suppose you're reading GitHub issues on a public repo, whether with GitHub MCP or the `gh` CLI. Someone could write a prompt injection into an issue, and that gives you one of the three of the trifecta. Presumably you're doing something with private data already so that's two. So if your agent has any ability to send data out, some other tool that lets it, you've got the trifecta.
 :::
+
+## Best practices {.center}
+
+### Brevity is the soul of wit
 
 ## Best practices {.center}
 
@@ -460,8 +482,18 @@ See also https://chrlschn.dev/blog/2026/03/mcp-is-dead-long-live-mcp/
 
 -->
 
+## MCP, or not MCP?
+<!-- TODO finish this -->
 
-<!-- TODO need to conclude this talk -->
+* Writing and deploying your own remote MCP servers can unlock massive value
+
+* AI brings inherent security risks, but a well designed MCP server can mitigate them
+
+* 
+
+## Thank you
+
+<!-- TODO link and QR to slides on my website -->
 
 
 
