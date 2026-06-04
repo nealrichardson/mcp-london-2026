@@ -127,17 +127,13 @@ And, you can host MCP servers on it.
 Last year, we found ourselves getting more and more into using Claude Code. One of the great things about our current moment in the industry is that so many things that may have seemed hard or out of reach before are now available for us to do. It lets us be much more responsive to new ideas and requests--now we can just fire off Claude on a git worktree without having to do all of the context switching to consider it, and many times it just gets it done, or pretty close. 
 :::
 
-## {background-image="img/kermit-thinking.jpg"}
-
-<!-- TODO: crop differently -->
+## {background-image="img/kermit-thinking-cropped.jpg"}
 
 ::: {.notes}
 So, increasingly, I kept seeing problems and thinking, how can I use Claude to solve it? What else out there have we learned to be hard and painful that maybe isn't anymore?
 :::
 
 ## {background-image="img/kermit-phone.gif"}
-
-<!-- ![](img/kermit-phone.gif) -->
 
 ::: {.notes}
 Responding to support escalations became one of them. Posit uses Zendesk for support, customers can file tickets there and they get fielded by our support team. When they get a clear bug report, or something that they can't answer on their own, it escalates to the engineers.
@@ -316,9 +312,9 @@ For a few reasons, I'm going to focus on remote MCP, and in particular on remote
 * Realizing that MCP was just a convention for how to set up API endpoints helped demystify it for me. As someone who has worked in software and data for many years, I know how to use an HTTP API, I know how to build and serve them too. 
 :::
 
-## 
+## {background-image="img/unix-system.jpg"}
 
-![](img/unix-system.gif)
+<!-- ![](img/unix-system.gif) -->
 
 ::: {.notes}
 You know what this is too. And your coding agents do too.
@@ -330,13 +326,13 @@ You know what this is too. And your coding agents do too.
 
 https://www.reddit.com/r/mcp/comments/1jn3ykp/mind_blown_with_mcp/
 
-## Then, the backlash
-<!-- TODO distracted boyfriend meme -->
-![](img/cli-is-winning.png)
+:::{.notes}
+Then, a backlash
+:::
 
-https://hackernoon.com/mcp-is-dead-the-cli-is-winning-the-ai-agent-stack
+## {background-image="img/distracted-boyfriend.jpg"}
 
-## Then, the backlash
+## 
 
 ![](img/mcp-is-dead.png)
 
@@ -371,25 +367,28 @@ Critiques
 
 ## (MCP + Skill) vs. (CLI + Skill)
 
-<!-- TODO red button meme? -->
+::: {.columns}
 
-* Critique that MCP takes up too much context: all tool definitions are loaded up front and take up tokens
+:::: {.column width="40%"}
+![](img/Two-Buttons.jpg)
+::::
 
-* Claude Code is good with CLIs: why use GitHub's MCP if `gh` is already right there?
+:::: {.column width="60%"}
 
-* Use CLI when:
+Critique that MCP takes up too much context: all tool definitions are loaded up front and take up tokens
 
-    * CLI already exists, is widely available and in the training data
+Claude Code is good with CLIs: why use GitHub's MCP if `gh` is already right there?
 
-    * Your agent has Bash available to call the CLI
+Use CLI when:
+
+* CLI already exists, is widely available and in the training data
+
+* Your agent has Bash available to call the CLI
+::::
+:::
 
 :::{.notes}
 CLI not and option if the AI application can't run shell commands
-
-Distribution for remote MCP is also easier: single command to add a server by URL, rather than install CLI (and authenticate etc.) out of band
-
-To be specific, remote MCP servers that you write and host yourself. You can manage auth, customize how they respond and what they expose, and even get into fancier enterprise-y things like observability and auditing. 
-
 :::
 
 ## More things you can do with remote MCP
@@ -404,6 +403,8 @@ To be specific, remote MCP servers that you write and host yourself. You can man
 
 :::{.notes}
 These are things you just can't do with a CLI
+
+Distribution for remote MCP is also easier: single command to add a server by URL, rather than install CLI (and authenticate etc.) out of band
 
 You (or your agent) could build these into your server, or you could deploy on a platform (like Connect) that gives you these for free.
 :::
@@ -431,6 +432,8 @@ It's not just that the MCP server itself may be malicious. Suppose you're readin
 ## Best practices {.center}
 
 ### Brevity is the soul of wit
+
+<!-- For longer talk: introduce these three points, then switch to code -->
 
 ## Best practices {.center}
 
@@ -483,20 +486,35 @@ See also https://chrlschn.dev/blog/2026/03/mcp-is-dead-long-live-mcp/
 -->
 
 ## MCP, or not MCP?
-<!-- TODO finish this -->
 
-* Writing and deploying your own remote MCP servers can unlock massive value
+* MCP is (just) an API standard for AI agents
+
+* Writing and deploying your own remote MCP servers can unlock superpowers for your agentic workflows
 
 * AI brings inherent security risks, but a well designed MCP server can mitigate them
 
-* 
+* You (or your agent) can easily write custom MCP servers
 
 ## Thank you
 
-<!-- TODO link and QR to slides on my website -->
+::: {.columns}
 
+:::: {.column width="50%" style="text-align: center;"}
+[MCP spec](https://modelcontextprotocol.io/)
 
+{{< qrcode https://modelcontextprotocol.io/ width=300 height=300 >}}
+::::
 
+:::: {.column width="50%" style="text-align: center;"}
+
+[These slides](https://enpiar.com/mcp-newcastle-2026/)
+
+{{< qrcode https://enpiar.com/mcp-newcastle-2026/ width=300 height=300 >}}
+
+::::
+:::
+
+##
 
 
 ## What do we need?
@@ -506,33 +524,74 @@ See also https://chrlschn.dev/blog/2026/03/mcp-is-dead-long-live-mcp/
 * A place to deploy it
 
 ::: {.notes}
-Let's start with code. For code, MCP servers are most commonly written in JavaScript or Python. I'm more experienced with Python so that's my choice. 
-
-There is an official `mcp` SDK, and then there is the `fastmcp` library. Confusingly, the `mcp` SDK incorporated the v1 of `fastmcp` as a submodule within it, but `fastmcp` the separate project has moved on from there. So you may see a `FastMCP` class in your code and need to be clear about which module it's coming from.
-
-FastMCP has lots of good examples and syntactic sugar for making it simple to start a project. But really you'll just ask Claude or whatever to do this for you and it will be fine.
+Let's start with code. For code, MCP servers are most commonly written in JavaScript or Python. We're at PyData, so let's go with Python! 
 :::
 
-```python
-from fastmcp import FastMCP
-```
+## MCP libraries
+
+<!-- make this progressive? -->
+Official MCP SDK
 
 ```python
 from mcp.server.fastmcp import FastMCP
 ```
 
-## 
+`fastmcp` library
 
-Zendesk MCP example: https://github.com/nealrichardson/zendesk-mcp-server
+```python
+from fastmcp import FastMCP
+```
+
+::: {.notes}
+There is an official `mcp` SDK, and then there is the `fastmcp` library. Confusingly, the `mcp` SDK incorporated the v1 of `fastmcp` as a submodule within it, but `fastmcp` the separate project has moved on from there. So you may see a `FastMCP` class in your code and need to be clear about which module it's coming from.
+
+FastMCP has lots of good examples and syntactic sugar for making it simple to start a project.
+
+Really, just ask your agent to bootstrap your project. Just watch out in case it gets confused with the different fastmcp versions.
+:::
+
+##
+
+```
+ ▐▛███▜▌   Claude Code v2.1.158
+▝▜█████▛▘  Opus 4.8 (1M context) · Claude Enterprise
+  ▘▘ ▝▝    ~/code
+
+   Opus 4.8 is here! Now defaults to high effort · /effort xhigh for your hardest tasks
+
+❯ please use the fastmcp library to help me start an MCP server for ...
+
+```
 
 :::{.notes}
-Let's start with a simple tool example. This comes from the Zendesk example. This is the tool definition for getting the Zendesk ticket. It's just a Python function with decorator that makes it a tool, kinda like how you would set up routes in FastAPI or Flask. And the function itself doesn't do much other than pass the ticket ID along to the REST API and return the resulting JSON
+I'm going to walk through some example code to illustrate the best practices I mentioned at the top. 
+:::
+
+## https://github.com/nealrichardson/zendesk-mcp-server {.center}
+
+:::{.notes}
+These come from the Zendesk MCP server that I talked about writing at the start. I should note that to get this, I started with a JavaScript project someone else had on GitHub, forked it, and asked Claude to port to Python. And to be honest, I don't write much code by hand these days, so the code in there is all Claude-assisted and may not meet our highest aesthetic, Pythonic standards. But it works!
+
+## 
+
+:::{.notes}
+Let's start with a simple tool example. This is the tool definition for getting the Zendesk ticket. It's just a Python function with decorator that makes it a tool, kinda like how you would set up routes in FastAPI or Flask. And the function itself doesn't do much other than pass the ticket ID along to the REST API and return the resulting JSON
 
 Why would we do this? Why don't we talk directly to the REST API? 
 
 First is auth: we've encapsulated the auth to Zendesk into this "client" object, which we're managing in the MCP server. You can take your API key and set it in the server, and now you don't have to expose that somehow in your agent session: it just calls `get_ticket` and never sees the API key. 
 
-Second is that we can manage the context: both which resources are available at all, and the contents of the response. We wouldn't want to just give Claude the OpenAPI spec for the Zendesk API and say "figure it out". That's way too many endpoints, too much context consumed. 
+the example references a `client` object, which is a pretty standard looking REST API client class. It holds your credentials, passes them in the right way to the REST API, and it knows how to handle the usual API responses, etc. The important thing to notice here is that the auth to that API, to Zendesk, does not appear in the MCP tool--it's all handled by the server. You put your API key in an environment variable or secret on the server, and then you don't have to pass that around to anyone that wants to access Zendesk. 
+
+You may be thinking: this could be a risk, you need your server hosted somewhere secure and not open to the internet. hold that thought.
+
+
+<!-- reframe around the first bullet: limiting tools available, both for context and for what capabilities are given to the agent -->
+* managing context: right now we only have one tool! that's a lot less than the whole REST API. so a lot less information to confuse your model. So we can selectively include tools that we need, and leave off the things that we don't. 
+
+Second is so that we can limit which tools are available to the agent. So that we can manage the context: both which resources are available at all, and the contents of the response. We wouldn't want to just give Claude the OpenAPI spec for the Zendesk API and say "figure it out". That's way too many endpoints, too much context consumed. 
+
+This was really important in this case because, like many other APIs out there, Zendesk doesn't let you make fine-grained access tokens, so the API key you would use here has full read and write access to everything in Zendesk. I don't want to turn an AI agent, non-deterministic and wacky as they can be, wild on our entire support system. So, back to the previous point, the fact that I can selectively expose the tools I want allows me to limit the security exposure.
 :::
 
 ```python
@@ -552,23 +611,16 @@ Second is that we can manage the context: both which resources are available at 
 
 <!-- 
 
-
-* managing context: right now we only have one tool! that's a lot less than the whole REST API. so a lot less information to confuse your model. So we can selectively include tools that we need, and leave off the things that we don't. 
-
-* auth and security is another big reason, and it relates to that point as well. the example references a `client` object, which is a pretty standard looking REST API client class. It holds your credentials, passes them in the right way to the REST API, and it knows how to handle the usual API responses, etc. The important thing to notice here is that the auth to that API, to Zendesk, does not appear in the MCP tool--it's all handled by the server. You put your API key in an environment variable or secret on the server, and then you don't have to pass that around to anyone that wants to access Zendesk. 
-
-You may be thinking: this could be a risk, you need your server hosted somewhere secure and not open to the internet. hold that thought.
-
-This was really important in this case because, like many other APIs out there, Zendesk doesn't let you make fine-grained access tokens, so the API key you would use here has full read and write access to everything in Zendesk. I don't want to turn an AI agent, non-deterministic and wacky as they can be, wild on our entire support system. So, back to the previous point, the fact that I can selectively expose the tools I want allows me to limit the security exposure.
-
 Next: trimming responses, also sanitizing.
 
 You could serve this locally and it would solve many of the challenges I outlined at the top: you keep auth out of the AI agent, you limit what tools are available, and you can be smart about what you include in the responses so that you both minimize the context you're consuming with the tool responses, and so that you avoid exposing sensitive data. 
  -->
 
+
+<!-- 
 ## Deploying MCP servers
 
-<!-- Need to talk somewhere about hosting and deployment, Connect but also others, or just self host in docker or whatever inside your network, maybe that means you don't implement auth, but you can still benefit from the custom tools 
+Need to talk somewhere about hosting and deployment, Connect but also others, or just self host in docker or whatever inside your network, maybe that means you don't implement auth, but you can still benefit from the custom tools 
 
 For hosting, you have a few options. I, of course, deployed mine on Posit Connect because (a) it's available to me! and (b) it has some nice features that support MCP. I'll point those out as I go but I promise I'm not going to make this a sales pitch. 
 
@@ -580,21 +632,17 @@ You can also deploy on any cloud platform or service that your company has avail
 (mention oauth flow supported in MCP standard, so clients like Claude Code know how to authenticate to an MCP server.)
 (fastmcp, and other hosting products can offer solutions for auth too)
 
- -->
 
 ## Couldn't you just write a CLI instead?
 
-<!-- you could, and sure, go for it!--but:
+you could, and sure, go for it!--but:
 * Only useful to developers, using an agent that has shell. Can't use in other AI applications (confirm claude desktop can't)
 * Requires running code on the user's machine: has some advantages, but may not always be allowed (Windows??) or may not have access to private resources
 * Distribution problem: everyone has to download and install and update. Takes what is a security risk when using other people's MCP servers and turns it into an asset (you can push updates eagerly)
 * the real win for CLIs are those that are already in the training data for the models. Your CLI isn't, so the agent will have to hit --help on your commands to learn how to use it, and now it's consuming the same context window that your MCP tool definitions are
  -->
 
- example of `claude mcp add`
-
-
-
+<!-- Call back to MCP vs CLI in heading to the conclusion? -->
 ## When you should use MCP
 <!-- call back to the title? -->
 
