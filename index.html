@@ -11,7 +11,7 @@
   <meta name="generator" content="quarto-1.9.37">
 
   <meta name="author" content="Neal Richardson">
-  <meta name="dcterms.date" content="2026-06-05">
+  <meta name="dcterms.date" content="2026-06-06">
   <title>MCP, or not MCP?</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -263,12 +263,12 @@
 Neal Richardson 
 </div>
         <p class="quarto-title-affiliation">
-            AI in Production
+            PyData London
           </p>
     </div>
 </div>
 
-  <p class="date">June 5, 2026</p>
+  <p class="date">June 6, 2026</p>
 </section>
 <section id="section" class="slide level2">
 <h2></h2>
@@ -617,7 +617,6 @@ For context, I should introduce myself
 </section>
 <section id="section-8" class="slide level2" data-background-image="img/unix-system.jpg">
 <h2></h2>
-<!-- ![](img/unix-system.gif) -->
 <aside class="notes">
 <p>You know what this is too. And your coding agents do too.</p>
 <style type="text/css">
@@ -771,7 +770,11 @@ For context, I should introduce myself
 <section id="best-practices" class="slide level2 center">
 <h2>Best practices</h2>
 <h3 id="brevity-is-the-soul-of-wit">Brevity is the soul of wit</h3>
-<!-- For longer talk: introduce these three points, then switch to code -->
+<ul>
+<li><p>Only define the tools you need</p></li>
+<li><p>Make responses concise</p></li>
+<li><p>Sanitize sensitive data</p></li>
+</ul>
 </section>
 <section id="best-practices-1" class="slide level2 center">
 <h2>Best practices</h2>
@@ -833,52 +836,6 @@ For context, I should introduce myself
           overflow: hidden!important;
           display:block!important;
       }</style></aside>
-<!-- first walk through the points I hit at the beginning: auth, manage permissions, trim responses, do exactly what you want 
-
-See also https://chrlschn.dev/blog/2026/03/mcp-is-dead-long-live-mcp/
-
--->
-</section>
-<section id="mcp-or-not-mcp" class="slide level2">
-<h2>MCP, or not MCP?</h2>
-<ul>
-<li><p>MCP is (just) an API standard for AI agents</p></li>
-<li><p>Writing and deploying your own remote MCP servers can unlock superpowers for your agentic workflows</p></li>
-<li><p>AI brings inherent security risks, but a well designed MCP server can mitigate them</p></li>
-<li><p>You (or your agent) can easily write custom MCP servers</p></li>
-</ul>
-</section>
-<section id="thank-you" class="slide level2">
-<h2>Thank you</h2>
-<div class="columns">
-<div class="column" style="text-align: center;">
-<p><a href="https://modelcontextprotocol.io/">MCP spec</a></p>
-<a href="https://modelcontextprotocol.io/" class="qrcode"><div id="" class="qrcode"></div></a>
-<script type="text/javascript">
-(function() {
-  var script = document.currentScript;
-  var qrcode = script.previousElementSibling;
-  qrcode.qrcode = new QRCode(qrcode, {"colorDark":"#000000","colorLight":"#ffffff","height":"300","text":"https://modelcontextprotocol.io/","width":"300"});
-  script.remove();
-})();
-</script>
-    
-</div><div class="column" style="text-align: center;">
-<p><a href="https://enpiar.com/mcp-newcastle-2026/">These slides</a></p>
-<a href="https://enpiar.com/mcp-newcastle-2026/" class="qrcode"><div id="" class="qrcode"></div></a>
-<script type="text/javascript">
-(function() {
-  var script = document.currentScript;
-  var qrcode = script.previousElementSibling;
-  qrcode.qrcode = new QRCode(qrcode, {"colorDark":"#000000","colorLight":"#ffffff","height":"300","text":"https://enpiar.com/mcp-newcastle-2026/","width":"300"});
-  script.remove();
-})();
-</script>
-    
-</div></div>
-</section>
-<section id="section-11" class="slide level2">
-<h2></h2>
 </section>
 <section id="what-do-we-need" class="slide level2">
 <h2>What do we need?</h2>
@@ -923,7 +880,7 @@ See also https://chrlschn.dev/blog/2026/03/mcp-is-dead-long-live-mcp/
           display:block!important;
       }</style></aside>
 </section>
-<section id="section-12" class="slide level2">
+<section id="section-11" class="slide level2">
 <h2></h2>
 <pre><code> ▐▛███▜▌   Claude Code v2.1.158
 ▝▜█████▛▘  Opus 4.8 (1M context) · Claude Enterprise
@@ -951,7 +908,7 @@ See also https://chrlschn.dev/blog/2026/03/mcp-is-dead-long-live-mcp/
 <h2>https://github.com/nealrichardson/zendesk-mcp-server</h2>
 <aside class="notes">
 <p>These come from the Zendesk MCP server that I talked about writing at the start. I should note that to get this, I started with a JavaScript project someone else had on GitHub, forked it, and asked Claude to port to Python. And to be honest, I don’t write much code by hand these days, so the code in there is all Claude-assisted and may not meet our highest aesthetic, Pythonic standards. But it works!</p>
-<section id="section-13" class="slide level2">
+<section id="section-12" class="slide level2">
 <h2></h2>
 <aside class="notes">
 <p>Let’s start with a simple tool example. This is the tool definition for getting the Zendesk ticket. It’s just a Python function with decorator that makes it a tool, kinda like how you would set up routes in FastAPI or Flask. And the function itself doesn’t do much other than pass the ticket ID along to the REST API and return the resulting JSON</p>
@@ -1018,19 +975,53 @@ you could, and sure, go for it!--but:
 * Distribution problem: everyone has to download and install and update. Takes what is a security risk when using other people's MCP servers and turns it into an asset (you can push updates eagerly)
 * the real win for CLIs are those that are already in the training data for the models. Your CLI isn't, so the agent will have to hit --help on your commands to learn how to use it, and now it's consuming the same context window that your MCP tool definitions are
  -->
-<!-- Call back to MCP vs CLI in heading to the conclusion? -->
 </section>
-<section id="when-you-should-use-mcp" class="slide level2">
-<h2>When you should use MCP</h2>
-<!-- call back to the title? -->
+<section id="mcp" class="slide level2">
+<h2>MCP!</h2>
+<ul>
+<li><p>MCP is (just) an API standard for AI agents</p></li>
+<li><p>Writing and deploying your own remote MCP servers can unlock superpowers for your agentic workflows</p></li>
+<li><p>AI brings inherent security risks, but a well designed MCP server can mitigate them</p></li>
+<li><p>Limiting the tools you expose and the data in responses improves efficiency <em>and</em> security</p></li>
+<li><p>You (or your agent) can easily write custom MCP servers</p></li>
+</ul>
 </section>
-<section id="when-you-should-not" class="slide level2">
-<h2>When you should not</h2>
+<section id="or-not-mcp" class="slide level2">
+<h2>Or not MCP?</h2>
 <ul>
 <li><p>You’re in a coding agent that has <code>bash</code> and there is a widely available CLI for your task (like <code>gh</code>)</p></li>
 <li><p>You can express what you want the agent to do in plain text (markdown), building on other tools it already has</p></li>
-<li><p>You don’t have somewhere secure to deploy a remote MCP server</p></li>
+<li><p>You don’t have somewhere secure to deploy a remote MCP server (well designed local MCP still better than nothing)</p></li>
 </ul>
+</section>
+<section id="thank-you" class="slide level2">
+<h2>Thank you</h2>
+<div class="columns">
+<div class="column" style="text-align: center;">
+<p><a href="https://enpiar.com/mcp-london-2026/">These slides</a></p>
+<a href="https://enpiar.com/mcp-london-2026/" class="qrcode"><div id="" class="qrcode"></div></a>
+<script type="text/javascript">
+(function() {
+  var script = document.currentScript;
+  var qrcode = script.previousElementSibling;
+  qrcode.qrcode = new QRCode(qrcode, {"colorDark":"#000000","colorLight":"#ffffff","height":"300","text":"https://enpiar.com/mcp-london-2026/","width":"300"});
+  script.remove();
+})();
+</script>
+    
+</div><div class="column" style="text-align: center;">
+<p><a href="https://github.com/nealrichardson/zendesk-mcp-server">Zendesk MCP repo</a></p>
+<a href="https://github.com/nealrichardson/zendesk-mcp-server" class="qrcode"><div id="" class="qrcode"></div></a>
+<script type="text/javascript">
+(function() {
+  var script = document.currentScript;
+  var qrcode = script.previousElementSibling;
+  qrcode.qrcode = new QRCode(qrcode, {"colorDark":"#000000","colorLight":"#ffffff","height":"300","text":"https://github.com/nealrichardson/zendesk-mcp-server","width":"300"});
+  script.remove();
+})();
+</script>
+    
+</div></div>
 
 </section>
 <style type="text/css">

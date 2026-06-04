@@ -1,8 +1,8 @@
 ---
 title: "MCP, or not MCP?"
 author: "Neal Richardson"
-institute: "AI in Production"
-date: "5 June 2026"
+institute: "PyData London"
+date: "6 June 2026"
 title-slide-attributes:
     data-background-image: img/torii.jpg
     data-background-opacity: "0.20"
@@ -314,8 +314,6 @@ For a few reasons, I'm going to focus on remote MCP, and in particular on remote
 
 ## {background-image="img/unix-system.jpg"}
 
-<!-- ![](img/unix-system.gif) -->
-
 ::: {.notes}
 You know what this is too. And your coding agents do too.
 :::
@@ -433,7 +431,11 @@ It's not just that the MCP server itself may be malicious. Suppose you're readin
 
 ### Brevity is the soul of wit
 
-<!-- For longer talk: introduce these three points, then switch to code -->
+* Only define the tools you need
+
+* Make responses concise
+
+* Sanitize sensitive data
 
 ## Best practices {.center}
 
@@ -479,42 +481,6 @@ Finally, thinking back to the lethal trifecta, or even just good data goverance 
 In this example, we can keep the information that a user from Posit reported this issue, which could be useful--maybe I want to look up other issues reported by this company--but the personal identity does not leak out.
 :::
 
-<!-- first walk through the points I hit at the beginning: auth, manage permissions, trim responses, do exactly what you want 
-
-See also https://chrlschn.dev/blog/2026/03/mcp-is-dead-long-live-mcp/
-
--->
-
-## MCP, or not MCP?
-
-* MCP is (just) an API standard for AI agents
-
-* Writing and deploying your own remote MCP servers can unlock superpowers for your agentic workflows
-
-* AI brings inherent security risks, but a well designed MCP server can mitigate them
-
-* You (or your agent) can easily write custom MCP servers
-
-## Thank you
-
-::: {.columns}
-
-:::: {.column width="50%" style="text-align: center;"}
-[MCP spec](https://modelcontextprotocol.io/)
-
-{{< qrcode https://modelcontextprotocol.io/ width=300 height=300 >}}
-::::
-
-:::: {.column width="50%" style="text-align: center;"}
-
-[These slides](https://enpiar.com/mcp-newcastle-2026/)
-
-{{< qrcode https://enpiar.com/mcp-newcastle-2026/ width=300 height=300 >}}
-
-::::
-:::
-
-##
 
 
 ## What do we need?
@@ -642,14 +608,41 @@ you could, and sure, go for it!--but:
 * the real win for CLIs are those that are already in the training data for the models. Your CLI isn't, so the agent will have to hit --help on your commands to learn how to use it, and now it's consuming the same context window that your MCP tool definitions are
  -->
 
-<!-- Call back to MCP vs CLI in heading to the conclusion? -->
-## When you should use MCP
-<!-- call back to the title? -->
 
-## When you should not
+## MCP!
+
+* MCP is (just) an API standard for AI agents
+
+* Writing and deploying your own remote MCP servers can unlock superpowers for your agentic workflows
+
+* AI brings inherent security risks, but a well designed MCP server can mitigate them
+
+* Limiting the tools you expose and the data in responses improves efficiency _and_ security
+
+* You (or your agent) can easily write custom MCP servers
+
+## Or not MCP?
 
 * You're in a coding agent that has `bash` and there is a widely available CLI for your task (like `gh`)
 
 * You can express what you want the agent to do in plain text (markdown), building on other tools it already has
 
-* You don't have somewhere secure to deploy a remote MCP server
+* You don't have somewhere secure to deploy a remote MCP server (well designed local MCP still better than nothing)
+
+## Thank you
+
+::: {.columns}
+
+:::: {.column width="50%" style="text-align: center;"}
+
+[These slides](https://enpiar.com/mcp-london-2026/)
+
+{{< qrcode https://enpiar.com/mcp-london-2026/ width=300 height=300 >}}
+
+::::
+:::: {.column width="50%" style="text-align: center;"}
+[Zendesk MCP repo](https://github.com/nealrichardson/zendesk-mcp-server)
+
+{{< qrcode https://github.com/nealrichardson/zendesk-mcp-server width=300 height=300 >}}
+::::
+:::
