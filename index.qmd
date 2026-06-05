@@ -8,6 +8,7 @@ title-slide-attributes:
     data-background-opacity: "0.20"
 format:
   clean-revealjs:
+    code-line-numbers: false
     include-in-header:
       text: |
         <style>
@@ -406,7 +407,9 @@ https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/
 
 Opening your agent up to external resources and code creates the opportunity for the lethal trifecta. This is not specific to MCP but there were some very public examples of exploits in the early months of MCP. 
 
-It's not just that the MCP server itself may be malicious. Suppose you're reading GitHub issues on a public repo, whether with GitHub MCP or the `gh` CLI. Someone could write a prompt injection into an issue, and that gives you one of the three of the trifecta. Presumably you're doing something with private data already so that's two. So if your agent has any ability to send data out, some other tool that lets it, you've got the trifecta.
+Suppose you're reading GitHub issues on a public repo, whether with GitHub MCP or the `gh` CLI. Someone could write a prompt injection into an issue, and that gives you one of the three of the trifecta. So if your agent has any ability to send data out, some other tool that lets it, you've got the trifecta.
+
+so, how do we handle this? and how do we generally get the best results from using MCP? I've identified some best practices:
 :::
 
 ## Best practices {.center}
@@ -421,16 +424,27 @@ It's not just that the MCP server itself may be malicious. Suppose you're readin
 
 :::{.notes}
 Brevity is the soul of wit (had to get one Hamlet reference in here, given the title)
+
+(read slide)
+
+I want to walk through these using some code examples from the Zendesk MCP I (well, Claude) wrote. Because the best way to get started writing your own MCP server is just:
 :::
 
-## What do we need?
+##
 
-* Code
+```
+ ▐▛███▜▌   Claude Code v2.1.158
+▝▜█████▛▘  Opus 4.8 (1M context) · Claude Enterprise
+  ▘▘ ▝▝    ~/code
 
-* A place to deploy it
+   Opus 4.8 is here! Now defaults to high effort · /effort xhigh for your hardest tasks
 
-::: {.notes}
-Let's start with code. For code, MCP servers are most commonly written in JavaScript or Python. We're at PyData, so let's go with Python! 
+❯ please use the fastmcp library to help me start an MCP server for ...
+
+```
+
+:::{.notes}
+FastMCP is a great framework for MCP in Python. Though you should be aware:
 :::
 
 ## MCP libraries
@@ -451,26 +465,9 @@ from fastmcp import FastMCP
 ::: {.notes}
 There is an official `mcp` SDK, and then there is the `fastmcp` library. Confusingly, the `mcp` SDK incorporated the v1 of `fastmcp` as a submodule within it, but `fastmcp` the separate project has moved on from there. So you may see a `FastMCP` class in your code and need to be clear about which module it's coming from.
 
-FastMCP has lots of good examples and syntactic sugar for making it simple to start a project.
-
 Really, just ask your agent to bootstrap your project. Just watch out in case it gets confused with the different fastmcp versions.
-:::
 
-##
-
-```
- ▐▛███▜▌   Claude Code v2.1.158
-▝▜█████▛▘  Opus 4.8 (1M context) · Claude Enterprise
-  ▘▘ ▝▝    ~/code
-
-   Opus 4.8 is here! Now defaults to high effort · /effort xhigh for your hardest tasks
-
-❯ please use the fastmcp library to help me start an MCP server for ...
-
-```
-
-:::{.notes}
-I'm going to walk through some example code to illustrate the best practices I mentioned at the top. 
+The examples I'm going to reference are in this repo:
 :::
 
 ##
@@ -494,34 +491,12 @@ I'm going to walk through some example code to illustrate the best practices I m
 :::
 
 :::{.notes}
-These come from the Zendesk MCP server that I talked about writing at the start. I should note that to get this, I started with a JavaScript project someone else had on GitHub, forked it, and asked Claude to port to Python. And to be honest, I don't write much code by hand these days, so the code in there is all Claude-assisted and may not meet our highest aesthetic, Pythonic standards. I think it's using the official MCP SDK version of FastMCP. But hey it works!
+These come from the Zendesk MCP server that I talked about writing at the start. I should note that to get this, I started with a JavaScript project someone else had on GitHub, forked it, and asked Claude to port to Python. And to be honest, I don't write much code by hand these days, so the code in there is all Claude-assisted and may not meet our highest aesthetic, Pythonic standards. In fact, in preparing these slides, I was reading some of this for the first time and simplified a bit for presentation here. But hey it works!
+
+Let's start with a simple tool example. 
 :::
 
-## 1. Only define the tools you need
-
-:::{.notes}
-Let's start with a simple tool example. This is the tool definition for getting the Zendesk ticket. It's just a Python function with decorator that makes it a tool, kinda like how you would set up routes in FastAPI or Flask. And the function itself doesn't do much other than pass the ticket ID along to the REST API and return the resulting JSON
-
-Why would we do this? Why don't we talk directly to the REST API? 
-
-First is auth: we've encapsulated the auth to Zendesk into this "client" object, which we're managing in the MCP server. You can take your API key and set it in the server, and now you don't have to expose that somehow in your agent session: it just calls `get_ticket` and never sees the API key. 
-
-the example references a `client` object, which is a pretty standard looking REST API client class. It holds your credentials, passes them in the right way to the REST API, and it knows how to handle the usual API responses, etc. The important thing to notice here is that the auth to that API, to Zendesk, does not appear in the MCP tool--it's all handled by the server. You put your API key in an environment variable or secret on the server, and then you don't have to pass that around to anyone that wants to access Zendesk. 
-
-This was really important in this case because, like many other APIs out there, Zendesk doesn't let you make fine-grained access tokens, so the API key you would use here has full read and write access to everything in Zendesk. I don't want to turn an AI agent, non-deterministic and wacky as they can be, wild on our entire support system. So, back to the previous point, the fact that I can selectively expose the tools I want allows me to limit the security exposure.
-
-So, here we only have one tool! that's a lot less than the whole REST API. so a lot less information to confuse your model. So we can selectively include tools that we need, and leave off the things that we don't. 
-
-One reason is for efficiency:
-
-Every tool definition consumes context in your agent. That's tokens. Both money and distraction from what your real question is. 
-
-So, unlike when you're making a REST API to interact with via other software, or a web app, or whatever, you want a small number of tools that do exactly what you want. Any more than that has a cost. We wouldn't want to just give Claude the OpenAPI spec for the Zendesk API and say "figure it out". That's way too many endpoints, too much context consumed. 
-
-Another reason is security: do you really need tools that can write?
-
-If the answer is "sometimes", make more than one server, or make it configurable and make different deployments, or have some other means of allowing users of your MCP server to select only what they need?
-:::
+##
 
 ```python
     @mcp.tool()
@@ -537,6 +512,66 @@ If the answer is "sometimes", make more than one server, or make it configurable
         except Exception as e:
             return f"Error getting ticket: {e}"
 ```
+
+:::{.notes}
+This is the tool definition for getting the Zendesk ticket. It's just a Python function with decorator that makes it a tool, kinda like how you would set up routes in FastAPI or Flask. And the function itself doesn't do much other than pass the ticket ID along to the REST API and return the resulting JSON
+
+<!-- break here and use code highlighting? -->
+
+Notice how we've encapsulated the auth to Zendesk into this "client" object, which we're managing in the MCP server. You can take your API key and set it in the server, and now you don't have to expose that somehow in your agent session: it just calls `get_ticket` and never sees the API key. 
+
+the example references a `client` object, which is a pretty standard looking REST API client class. It holds your credentials, passes them in the right way to the REST API, and it knows how to handle the usual API responses, etc. The important thing to notice here is that the auth to that API, to Zendesk, does not appear in the MCP tool--it's all handled by the server. You put your API key in an environment variable or secret on the server, and then you don't have to pass that around to anyone that wants to access Zendesk. 
+
+<!-- This was really important in this case because, like many other APIs out there, Zendesk doesn't let you make fine-grained access tokens, so the API key you would use here has full read and write access to everything in Zendesk. I don't want to turn an AI agent, non-deterministic and wacky as they can be, wild on our entire support system. So, back to the previous point, the fact that I can selectively expose the tools I want allows me to limit the security exposure. -->
+
+By wrapping the API like this, and not trying to expose the entire API as MCP tools,we can be selective about the tools we're exposing to the AI agent, which is our first best practice.
+:::
+
+## 1. Only define the tools you need
+
+```python
+    @mcp.tool()
+    async def get_ticket(id: int) -> str:
+        """Get a specific ticket by ID.
+
+        Args:
+            id: Ticket ID
+        """
+        try:
+            result = await client.get_ticket(id)
+            return json.dumps(result, indent=2)
+        except Exception as e:
+            return f"Error getting ticket: {e}"
+```
+
+:::{.notes}
+So, right now we only have one tool! that's a lot less than the whole REST API. so a lot less information to confuse your model. So we can selectively include tools that we need, and leave off the things that we don't. 
+
+One reason is for efficiency:
+
+Every tool definition consumes context in your agent. That's tokens. Both money and distraction from what your real question is. 
+
+So, unlike when you're making a REST API to interact with via other software, or a web app, or whatever, you want a small number of tools that do exactly what you want. Any more than that has a cost. We wouldn't want to just give Claude the OpenAPI spec for the Zendesk API and say "figure it out". That's way too many endpoints, too much context consumed. 
+:::
+
+##
+<!--TODO: include screenshots of Zendesk API docs to show scope of the API -->
+
+:::{.notes}
+look how big the full API is. we don't need this for our application
+:::
+
+## {background-image="img/zendesk-bulk-delete.png"}
+
+:::{.notes}
+Another reason is security: do you really need tools that can write?
+
+Many APIs or services you might want to use with your AI agent don't support fine grained access tokens that would give you granular control over what it can do at that level. So restricting tools by construction at the MCP server level can give you that assurance. (Also, just trying to prompt your agent not to do bad things isn't reliable enough.)
+
+If you do have legitimate reasons to expose tools with write access, make more than one server, or make it configurable and make different deployments, or have some other means of allowing users of your MCP server to select only what they need. 
+
+Ok, next thing to do:
+:::
 
 ## 2. Make responses concise
 
@@ -563,9 +598,9 @@ If the answer is "sometimes", make more than one server, or make it configurable
 ```
 
 :::{.notes}
-Here's a second tool, for the comments on a ticket. The point is what it does to the response: instead of passing the raw API payload straight through, I strip it down to just what matters for the question I'm asking.
+Here's a second tool, for the comments on a ticket. All of the back and forth discussion that's happened. Instead of passing the raw API payload straight through, I strip it down to just what matters for the question I'm asking.
 
-Remember, everything this returns goes straight into the model's context. The raw Zendesk response for a comment is huge: each one carries metadata about whether it came in by email or the web portal, the user agent, sometimes the location of the browser where it was typed, plus full attachment details like thumbnails and malware scans. Useful to some developer somewhere, but it's just noise for triaging a bug. So I drop it--keep the plain text, keep enough of each attachment to fetch it, and throw the rest away.
+(Remember, everything this returns goes straight into the model's context. The raw Zendesk response for a comment is huge: each one carries metadata about whether it came in by email or the web portal, the user agent, sometimes the location of the browser where it was typed, plus full attachment details like thumbnails and malware scans. Useful to some developer somewhere, but it's just noise for triaging a bug. So I drop it--keep the plain text, keep enough of each attachment to fetch it, and throw the rest away.)
 
 Less context means lower cost, and less for the model to get distracted by. This is the kind of shaping you can only do when you write the tool yourself.
 :::
@@ -591,10 +626,15 @@ Last one, and this ties back to the lethal trifecta--or honestly just good data 
 If there's PII in what I'm pulling in, and I don't need it to answer the question, I prune it or redact it before it ever reaches the agent. Here I'm keeping the domain, so I can still see this came from someone at Posit--maybe I want to look up other tickets from that company--but the individual's identity never leaks into the context, into the logs, into wherever that context ends up next.
 
 I get to decide that, because it's my server and my code.
-
-And note: even just this much, served locally, would solve a lot of what I complained about at the start--auth stays out of the agent, the tool set is limited, the responses are trimmed. We'd be efficient with tokens and reduce our exposure to the lethal trifecta. But it's even better as a remote server deployed somewhere. So we need...
 :::
 
+## [This would still be pretty good as local MCP]{style="color: white;"} {background-image="img/obama-thumbs-up.png"}
+
+:::{.notes}
+And note: even just this much, served locally, would solve a lot of what I complained about at the start--auth stays out of the agent, the tool set is limited, the responses are trimmed. We'd be efficient with tokens and reduce our exposure to the lethal trifecta. Distribution's not as great though, everyone needs to run it locally--not bad if I push it to GitHub, but the bigger issue is with Zendesk API access. Everyone will have to manage their own API keys, which my Security team would prefer not having floating out there. 
+
+But it's even better as a remote server deployed somewhere. So we need...
+:::
 
 ## A place to deploy it
 
@@ -660,14 +700,13 @@ And the support team that doesn't live in Claude Code? They can point any MCP cl
 
 ## Or not MCP?
 
-* You're in a coding agent that has `bash` and there is a widely available CLI for your task (like `gh`)
+* CLIs are great: if you're in a coding agent that has `bash` and there is a widely available CLI for your task (like `gh`)
 
-* You can express what you want the agent to do in plain text (markdown), building on other tools it already has
+* Skills are great: if you can express what you want the agent to do in plain text (markdown), building on other tools it already has
 
-* You don't have somewhere secure to deploy a remote MCP server (well designed local MCP still better than nothing)
+* Local MCP that you own: if you don't have somewhere secure to deploy a remote MCP server
 
 ## Thank you
-<!-- TODO: turn on github pages for this repo -->
 
 ::: {.columns}
 
