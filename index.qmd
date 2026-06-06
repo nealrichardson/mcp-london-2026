@@ -96,11 +96,9 @@ Hi, I'm Neal 👋
 
 * Apache Arrow PMC member
 
-* Currently VP Engineering at Posit
+* VP Engineering at Posit
 
-* enpiar.com
-
-* arrowrbook.com
+{{< qrcode https://enpiar.com/ width=300 height=300 >}}
 ::::
 
 :::
